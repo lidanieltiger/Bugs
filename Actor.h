@@ -59,7 +59,7 @@ class Organic :public Actor
 	private:
 		int m_hp;
 	protected:
-		bool m_stunned;
+		bool m_stunned; //ants can be stunned
 		bool m_dead;
 };
 class Trap :public Actor
@@ -146,7 +146,7 @@ class AdultGrasshopper : public GrassHopper
 		virtual void doSomething();
 		void stun() {}//unfazed by water
 		void poison() {}//unfazed by poison
-		void bite();
+		void bite(); //bite a random insect on the same square
 		virtual void getBitten() {
 			if(randInt(0,1)==0) //50% chance for retaliation
 				bite();
@@ -175,6 +175,7 @@ class BabyGrasshopper : public GrassHopper
 		void poison() {
 			sethp(-150); //get wrecked by poison
 		}
+
 };
 
 #endif // ACTOR_H_
