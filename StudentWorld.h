@@ -158,6 +158,9 @@ public:
 			return true;
 		return false;
 	}
+	void addAdultGrasshopper(int x, int y) {
+		actor_map[y][x].push_back(new AdultGrasshopper(x, y, this));
+	}
 	void addFood(int x, int y, int add) {
 		for (int i = 0; i < actor_map[y][x].size(); i++) {
 			if (actor_map[y][x][i]->getID() == IID_FOOD) {
@@ -174,6 +177,14 @@ public:
 			}
 		}
 		return nullptr;
+	}
+	vector<Actor*> getInsects(int x, int y) {
+		vector<Actor*> insects;
+		for (int i = 0; i < actor_map[y][x].size(); i++) {
+			if (actor_map[y][x][i]->getID() == IID_BABY_GRASSHOPPER)
+				insects.push_back(actor_map[y][x][i]);
+		}
+		return insects;
 	}
 private:
 	int m_tick;

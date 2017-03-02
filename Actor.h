@@ -19,7 +19,8 @@ class Actor : public GraphObject
 		//functions to be overriden in organic
 		virtual void sethp(int add) {}
 		virtual int gethp() { return 0; }
-		virtual bool canStun() { return false; } //for the water pool so it can't get repeatedly stunned
+		virtual void stun() {}
+		virtual void poison() {}
 
 		StudentWorld* getWorld() {
 			return m_world;
@@ -51,9 +52,7 @@ class Trap :public Actor
 		Trap(int startX, int startY, StudentWorld *src, int imageID)
 			:Actor(imageID, startX, startY, Direction(2), 2, src)
 		{}
-		void doAction() {
-			//look for insects
-		}
+		void doAction();//run through the victims
 		virtual void trigger(Actor* victim) = 0;
 };
 class Water :public Trap {
@@ -62,10 +61,8 @@ class Water :public Trap {
 			:Trap(startX, startY, src, IID_WATER_POOL)
 		{}
 		void trigger(Actor* victim) {
-			//check to see if we can stun the insect
-			//if you can, then stun it.
+			victim->stun();
 		}
-
 };
 class Poison :public Trap {
 public:
@@ -73,7 +70,7 @@ public:
 		:Trap(startX, startY, src, IID_POISON)
 	{}
 	void trigger(Actor* victim) {
-		//poison the shit out of the victim
+		victim->poison();
 	}
 };
 class Organic :public Actor
@@ -83,8 +80,12 @@ class Organic :public Actor
 			:Actor(imageID, startX, startY, startDirection, depth, src)
 		{
 			m_hp = hp;
+			m_stunned = false;
 		}
 		virtual void doAction() = 0;
+		virtual void stun() {}
+		virtual void poison() {}
+
 		void sethp(int life) {
 			m_hp += life;
 			if (m_hp < 0) { 
@@ -96,6 +97,8 @@ class Organic :public Actor
 		}
 	private:
 		int m_hp;
+	protected:
+		bool m_stunned;
 };
 class Food : public Organic {
 	public:
@@ -107,13 +110,18 @@ class Food : public Organic {
 class GrassHopper : public Organic
 {
 	public:
-		GrassHopper(int imageID, int startX, int startY, Direction startDirection, int depth, int hp, StudentWorld *src)
-			:Organic(startX, startY, src, imageID, startDirection, depth, hp)
+		GrassHopper(int imageID, int startX, int startY, Direction startDirection, int hp, StudentWorld *src)
+			:Organic(startX, startY, src, imageID, startDirection, 1, hp)
 		{
 			m_walkingDistance = randInt(2, 10);
 			m_direction = startDirection;
+			m_stunned_turns = 0;
 		}
-		virtual void doAction() = 0;
+		void doAction();
+		virtual void doSomething() = 0;
+		virtual void stun() = 0;
+		virtual void poison() = 0;
+
 		int getWalkingDistance() {
 			return m_walkingDistance;
 		}
@@ -131,19 +139,41 @@ class GrassHopper : public Organic
 	private:
 		int m_walkingDistance;
 		Direction m_direction;
-};
+	protected:
+		int m_stunned_turns;
 
+};
+class AdultGrasshopper : public GrassHopper
+{
+	public:
+		AdultGrasshopper(int startX, int startY, StudentWorld *src)
+			:GrassHopper(IID_ADULT_GRASSHOPPER, startX, startY, Direction(randInt(1,4)), 1600, src)
+		{
+			reOrient();
+		}
+		virtual void doSomething();
+		void stun() {}//unfazed by water
+		void poison() {}//unfazed by poison
+
+};
 class BabyGrasshopper : public GrassHopper
 {
 	public:
 		BabyGrasshopper(int startX, int startY, Direction startDirection, StudentWorld *src)
-			:GrassHopper(IID_BABY_GRASSHOPPER, startX, startY, startDirection, 1, 500, src)
+			:GrassHopper(IID_BABY_GRASSHOPPER, startX, startY, startDirection, 500, src)
 		{
-			m_stunned_turns = 0;
 		}
-		virtual void doAction();
-	private:
-		int m_stunned_turns;
+		virtual void doSomething();
+		void stun() { //get stunned by water
+			if (m_stunned) {
+				return;
+			}
+			m_stunned = true;
+			m_stunned_turns += 2;
+		}
+		void poison() {
+			sethp(-150); //get wrecked by poison
+		}
 };
 
 #endif // ACTOR_H_
