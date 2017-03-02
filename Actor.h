@@ -45,6 +45,37 @@ class Pebble :public Actor
 		void doAction() {//do nothing
 		}
 };
+class Trap :public Actor
+{
+	public:
+		Trap(int startX, int startY, StudentWorld *src, int imageID)
+			:Actor(imageID, startX, startY, Direction(2), 2, src)
+		{}
+		void doAction() {
+			//look for insects
+		}
+		virtual void trigger(Actor* victim) = 0;
+};
+class Water :public Trap {
+	public:
+		Water(int startX, int startY, StudentWorld *src)
+			:Trap(startX, startY, src, IID_WATER_POOL)
+		{}
+		void trigger(Actor* victim) {
+			//check to see if we can stun the insect
+			//if you can, then stun it.
+		}
+
+};
+class Poison :public Trap {
+public:
+	Poison(int startX, int startY, StudentWorld *src)
+		:Trap(startX, startY, src, IID_POISON)
+	{}
+	void trigger(Actor* victim) {
+		//poison the shit out of the victim
+	}
+};
 class Organic :public Actor
 {
 	public:

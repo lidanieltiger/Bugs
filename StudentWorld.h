@@ -57,11 +57,13 @@ public:
 						break;
 					}
 					case (Field::FieldItem::water):
+						actor_map[y][x].push_back(new Water(x, y, this));
 						break;
 					case (Field::FieldItem::rock):
 						actor_map[y][x].push_back(new Pebble(x, y, this));
 						break;
 					case (Field::FieldItem::poison):
+						actor_map[y][x].push_back(new Poison(x, y, this));
 						break;
 					default:
 						break;
@@ -152,7 +154,7 @@ public:
 	}
 	//helper functions for actor.h
 	bool isPebble(int x, int y) {
-		if (actor_map[y][x].size() != 0 && (actor_map[y][x])[0]->getID() == IID_ROCK)
+		if (actor_map[y][x].size() != 0 && (actor_map[y][x])[0]->getID() == IID_ROCK) //this is okay because pebbles will always occupy the first location and nothing can collide
 			return true;
 		return false;
 	}

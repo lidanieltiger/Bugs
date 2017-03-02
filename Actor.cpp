@@ -59,7 +59,7 @@ void BabyGrasshopper::doAction() {
 	}
 	if (m_stunned_turns <= 0) {
 		if (gethp() >= 1600) {//create and add a new adult grasshopper object in the square of the baby, kill the baby, and drop food
-			return;
+			return; //TODO: make the grasshopper evolve
 		}
 		//now try to eat food if there is any
 		int move = 0;
