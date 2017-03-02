@@ -58,7 +58,7 @@ class Organic :public Actor
 		int m_hp;
 		bool m_dead;
 };
-class Food : Organic {
+class Food : public Organic {
 	public:
 		Food(int startX, int startY, StudentWorld *src, int foodval)
 			:Organic(startX, startY, src, IID_FOOD, Direction(2), 2, foodval) {
