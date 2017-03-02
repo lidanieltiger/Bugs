@@ -50,7 +50,7 @@ public:
 						break;
 					case (Field::FieldItem::anthill0): 
 					{
-						ah0 = new AntHill(x,y,this,compilerForEntrant0); 
+						ah0 = new AntHill(x,y,this,compilerForEntrant0,0); 
 						actor_map[y][x].push_back(ah0);
 					}
 						break;
@@ -175,6 +175,9 @@ public:
 	void addAdultGrasshopper(int x, int y) {
 		actor_map[y][x].push_back(new AdultGrasshopper(x, y, this));
 	}
+	void addAnt(int x, int y, int colony, Compiler* c) {
+		actor_map[y][x].push_back(new Ant(x, y, this, colony, c));
+	}
 	void addFood(int x, int y, int add) {
 		for (int i = 0; i < actor_map[y][x].size(); i++) {
 			Food* food = dynamic_cast<Food*>(actor_map[y][x][i]);
@@ -193,14 +196,31 @@ public:
 		}
 		return nullptr;
 	}
-	vector<Organic*> getInsects(int x, int y) {
-		vector<Organic*> insects;
+	AntHill* getAntHill(int x, int y) {
 		for (int i = 0; i < actor_map[y][x].size(); i++) {
-			Organic* insect = dynamic_cast<Organic*>(actor_map[y][x][i]);
+			AntHill* hill = dynamic_cast<AntHill*>(actor_map[y][x][i]);
+			if (hill != nullptr)
+				return hill;
+		}
+		return nullptr;
+	}
+	vector<Insect*> getInsects(int x, int y) {
+		vector<Insect*> insects;
+		for (int i = 0; i < actor_map[y][x].size(); i++) {
+			Insect* insect = dynamic_cast<Insect*>(actor_map[y][x][i]);
 			if(insect!=nullptr)
 				insects.push_back(insect);
 		}
 		return insects;
+	}
+	vector<Trap*> getTraps(int x, int y) {
+		vector<Trap*> traps;
+		for (int i = 0; i < actor_map[y][x].size(); i++) {
+			Trap* trap = dynamic_cast<Trap*>(actor_map[y][x][i]);
+			if (trap != nullptr)
+				traps.push_back(trap);
+		}
+		return traps;
 	}
 private:
 	int m_tick;

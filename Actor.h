@@ -2,7 +2,6 @@
 #define ACTOR_H_
 #include "Compiler.h"
 #include "GraphObject.h"
-
 class StudentWorld;
 // Students:  Add code to this file, Actor.cpp, StudentWorld.h, and StudentWorld.cpp
 class Actor : public GraphObject
@@ -37,25 +36,10 @@ class Organic :public Actor
 			:Actor(imageID, startX, startY, startDirection, depth, src)
 		{
 			m_hp = hp;
-			m_stunned = false;
 			m_dead = false;
-			m_stunned_turns = 0;
 		}
 		virtual void doAction();
 		virtual void doSomething() {}
-		virtual void stun() { //get stunned by water
-			if (m_stunned) {
-				return;
-			}
-			m_stunned = true;
-			m_stunned_turns += 2;
-		}
-		virtual void poison() {
-			sethp(-150); //get wrecked by poison
-		}
-		virtual void getBitten() {
-			sethp(-50);
-		};
 		bool isDead() {
 			return m_dead;
 		}
@@ -71,59 +55,34 @@ class Organic :public Actor
 	private:
 		int m_hp;
 	protected:
-		bool m_stunned; //ants can be stunned
 		bool m_dead;
-		int m_stunned_turns;
 };
 class Insect :public Organic {
-	public:
-		Insect(int imageID, int startX, int startY, Direction startDirection, int hp, StudentWorld *src)
-			:Organic(startX, startY, src, imageID, startDirection, 1, hp) {
-		
+public:
+	Insect(int imageID, int startX, int startY, Direction startDirection, int hp, StudentWorld *src)
+		:Organic(startX, startY, src, imageID, startDirection, 1, hp) {
+		m_stunned = false;
+		m_stunned_turns = 0;
+		m_direction = startDirection;
+	}
+	virtual int getTeam() { return 5; } //return something that's on no one's team by default
+	virtual void stun() { //get stunned by water
+		if (m_stunned) {
+			return;
 		}
-
-};
-class AntHill : public Organic {
-	public:
-		AntHill(int startX, int startY, StudentWorld *src, Compiler* c) :
-			Organic(startX, startY, src, IID_ANT_HILL, Direction(2), 2, 8999) 
-		{
-			instructions = c;
-		}
-		void doAction() {
-			Organic::doAction();
-			doSomething();
-		}
-		void doSomething();
-	private: 
-		Compiler* instructions;
-
-};
-class Ant : public Organic {
-	public:
-		Ant(int startX, int startY, StudentWorld *src, int antType, Compiler *c) :
-			Organic(startX, startY, src, antType, Direction(randInt(1, 4)), 1, 1500) {
-			instructions = c;
-			m_colony = antType;
-			m_counter = 0;
-		}
-		void doAction() {
-			Organic::doAction();
-			if (m_stunned_turns <= 0) {
-				doSomething();
-			}
-			else
-				m_stunned_turns--;
-		}
-		void doSomething() {} //implement this function
-		void getBitten() {}
-		void poison() {}
-
-	private:
-		int m_counter;
-		int m_colony;
-		Compiler* instructions;
-
+		m_stunned = true;
+		m_stunned_turns += 2;
+	}
+	virtual void poison() {
+		sethp(-150); //get wrecked by poison
+	}
+	virtual void getBitten() {
+		sethp(-50);
+	};
+protected:
+	bool m_stunned; //ants can be stunned
+	int m_stunned_turns;
+	Direction m_direction;
 };
 class Trap :public Actor
 {
@@ -132,14 +91,14 @@ public:
 		:Actor(imageID, startX, startY, Direction(2), 2, src)
 	{}
 	void doAction();//run through the victims
-	virtual void trigger(Organic* victim) = 0;
+	virtual void trigger(Insect* victim) = 0;
 };
 class Water :public Trap {
 public:
 	Water(int startX, int startY, StudentWorld *src)
 		:Trap(startX, startY, src, IID_WATER_POOL)
 	{}
-	void trigger(Organic* victim) {
+	void trigger(Insect* victim) {
 		victim->stun();
 	}
 };
@@ -148,34 +107,113 @@ public:
 	Poison(int startX, int startY, StudentWorld *src)
 		:Trap(startX, startY, src, IID_POISON)
 	{}
-	void trigger(Organic* victim) {
+	void trigger(Insect* victim) {
 		victim->poison();
 	}
+};
+class Pheromone :public Organic {
+	public:
+		Pheromone(int startX, int startY, StudentWorld *src, int pheromonetype)
+			:Organic(startX, startY, src, pheromonetype, Direction(2), 2, 256) {
+			m_colony = pheromonetype;
+		}
+		void doAction(); //override doaction so that it doesn't drop food on death
+		int getColony() {
+			return m_colony;
+		}
+	private:
+		int m_colony;
+};
+class AntHill : public Organic {
+	public:
+		AntHill(int startX, int startY, StudentWorld *src, Compiler* c, int colonyID) :
+			Organic(startX, startY, src, IID_ANT_HILL, Direction(2), 2, 8999) 
+		{
+			instructions = c;
+			m_colony = colonyID;
+		}
+		int getColony() {
+			return m_colony;
+		}
+		void doAction() {
+			Organic::doAction();
+			doSomething();
+		}
+		void doSomething();
+	private: 
+		Compiler* instructions;
+		int m_colony;
+
+};
+class Ant : public Insect {
+	public:
+		Ant(int startX, int startY, StudentWorld *src, int antType, Compiler *c) :
+			Insect(antType, startX, startY, Direction(randInt(1, 4)), 1500, src) {
+			instructions = c;
+			m_colony = antType;
+			m_counter = 0;
+			m_food = 0;
+			m_randInt = 0;
+			m_bitten = false;
+			m_blocked = false;
+		}
+		void doAction() {
+			Organic::doAction();
+			if (m_stunned_turns > 0) {
+				m_stunned_turns--;
+			}
+			else 
+				doSomething();
+		}
+		void doSomething();
+		void attemptMove(Direction dir);
+		bool getDanger();
+		bool checkDanger(std::vector<Trap*> traps, std::vector<Insect*> insects) {
+			if (traps.size() > 0)
+				return true;
+			for (int i = 0; i < insects.size(); i++) {
+				if (insects[i]->getTeam() != m_colony)
+					return true;
+			}
+			return false;
+		}
+		void processIf(std::string op1, std::string op2);
+		int getTeam() {
+			return m_colony;
+		}
+		void getBitten() {
+			sethp(-50);
+			m_bitten = true;
+		};
+	private:
+		int m_counter;
+		int m_colony;
+		Compiler* instructions;
+		int m_food;
+		int m_randInt;
+		bool m_bitten;
+		bool m_blocked;
 };
 class Food : public Organic {
 	public:
 		Food(int startX, int startY, StudentWorld *src, int foodval)
 			:Organic(startX, startY, src, IID_FOOD, Direction(2), 2, foodval) {
 		}
-		virtual void getBitten() {} //food can't get bitten
-		virtual void poison() {} //food can't get poisoned
-		virtual void stun() {} //food can't get stunned
 		void doAction() {} //food doesn't do anything
 };
-class GrassHopper : public Organic
+class GrassHopper : public Insect
 {
 	public:
 		GrassHopper(int imageID, int startX, int startY, Direction startDirection, int hp, StudentWorld *src)
-			:Organic(startX, startY, src, imageID, startDirection, 1, hp)
+			:Insect(imageID, startX, startY, startDirection, hp, src)
 		{
 			m_walkingDistance = randInt(2, 10);
-			m_direction = startDirection;
 		}
 		void GrabnGo(); //eats and tries to move
 		virtual void doSomething() = 0;
-		virtual void stun() { Organic::stun(); }
-		virtual void poison() { Organic::poison(); }
-		virtual void getBitten() { Organic::getBitten(); }
+		virtual void stun() { Insect::stun(); }
+		virtual void poison() { Insect::poison(); }
+		virtual void getBitten() { Insect::getBitten(); }
 		virtual void doAction() {
 			Organic::doAction();
 			if (m_stunned_turns <= 0) {
@@ -188,11 +226,7 @@ class GrassHopper : public Organic
 		int getWalkingDistance() {
 			return m_walkingDistance;
 		}
-		Direction getDirection() {
-			return m_direction;
-		}
 		void attemptMove(Direction dir); //if the grasshopper was able to move, then walkingdistance decrements and grasshopper moves. otherwise walking distance set to zero.
-		//if attemptMove returns true, then set stunned to false because it got off the water pool
 
 		void reOrient() { //give the grasshopper new direction and walkingdistance
 			m_direction = Direction(randInt(1, 4));
@@ -201,7 +235,6 @@ class GrassHopper : public Organic
 		}
 	private:
 		int m_walkingDistance;
-		Direction m_direction;
 
 };
 class AdultGrasshopper : public GrassHopper
