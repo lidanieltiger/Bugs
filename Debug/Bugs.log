@@ -1,7 +1,9 @@
-﻿  StudentWorld.cpp
-c:\users\daniel\downloads\bugs-skeleton-windows\bugs\bugs\studentworld.h(88): warning C4018: '<': signed/unsigned mismatch
-  Actor.cpp
-c:\users\daniel\downloads\bugs-skeleton-windows\bugs\bugs\studentworld.h(88): warning C4018: '<': signed/unsigned mismatch
+﻿  Actor.cpp
+c:\users\daniel\downloads\bugs-skeleton-windows\bugs\bugs\studentworld.h(98): warning C4018: '<': signed/unsigned mismatch
+  Generating Code...
+  Compiling...
+  StudentWorld.cpp
+c:\users\daniel\downloads\bugs-skeleton-windows\bugs\bugs\studentworld.h(98): warning C4018: '<': signed/unsigned mismatch
   Generating Code...
 c:\users\daniel\downloads\bugs-skeleton-windows\bugs\bugs\studentworld.h(74): warning C4715: 'StudentWorld::init': not all control paths return a value
   Bugs.vcxproj -> C:\Users\Daniel\Downloads\Bugs-skeleton-windows\Bugs\Debug\Bugs.exe

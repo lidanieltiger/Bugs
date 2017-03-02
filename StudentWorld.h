@@ -77,10 +77,20 @@ public:
 		actor_map[y][x].pop_back(); //remove from original
 		actor_map[newY][newX].push_back(obj);
 	}
-
+	void deletefromStructure(int i, int x, int y) {
+		Actor* temp = actor_map[y][x][i];
+		actor_map[y][x][i] = actor_map[y][x][actor_map[y][x].size() - 1];
+		actor_map[y][x].pop_back(); //remove from original
+		delete temp;
+	}
+	void setDisplayText() {
+		string s = to_string(m_tick);
+		setGameStatText(s);
+	}
 	virtual int move()
 	{
 		m_tick++; // update the current tick # in the simulation
+		setDisplayText();//update the display text
 
 		for (int x = 0; x<VIEW_WIDTH;x++)
 		{
@@ -89,10 +99,15 @@ public:
 					Actor *temp = (actor_map[y][x])[i];
 					int oldX = temp->getX(), oldY = temp->getY();
 					temp->doAction();
-					//update location in the data structure if it has changed
-					int newX = temp->getX(), newY = temp->getY();
-					if (newX != oldX || newY != oldY) {
-						updateDataStructure(i, oldX, oldY, newX, newY,temp);
+					if (temp->isDead())
+						deletefromStructure(i, x, y);
+					else
+					{
+						//update location in the data structure if it has changed
+						int newX = temp->getX(), newY = temp->getY();
+						if (newX != oldX || newY != oldY) {
+							updateDataStructure(i, oldX, oldY, newX, newY, temp);
+						}
 					}
 				}
 			}
