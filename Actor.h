@@ -21,6 +21,7 @@ class Actor : public GraphObject
 		virtual int gethp() { return 0; }
 		virtual void stun() {}
 		virtual void poison() {}
+		virtual void getBitten() {}
 
 		StudentWorld* getWorld() {
 			return m_world;
@@ -85,6 +86,7 @@ class Organic :public Actor
 		virtual void doAction() = 0;
 		virtual void stun() {}
 		virtual void poison() {}
+		virtual void getBitten() = 0;
 
 		void sethp(int life) {
 			m_hp += life;
@@ -105,6 +107,7 @@ class Food : public Organic {
 		Food(int startX, int startY, StudentWorld *src, int foodval)
 			:Organic(startX, startY, src, IID_FOOD, Direction(2), 2, foodval) {
 		}
+		virtual void getBitten() {} //food can't get bitten
 		void doAction() {} //food doesn't do anything
 };
 class GrassHopper : public Organic
@@ -118,9 +121,11 @@ class GrassHopper : public Organic
 			m_stunned_turns = 0;
 		}
 		void doAction();
+		void GrabnGo(); //eats and tries to move
 		virtual void doSomething() = 0;
 		virtual void stun() = 0;
 		virtual void poison() = 0;
+		virtual void getBitten() = 0;
 
 		int getWalkingDistance() {
 			return m_walkingDistance;
@@ -154,6 +159,12 @@ class AdultGrasshopper : public GrassHopper
 		virtual void doSomething();
 		void stun() {}//unfazed by water
 		void poison() {}//unfazed by poison
+		void bite();
+		virtual void getBitten() {
+			if(randInt(0,1)==0) //50% chance for retaliation
+				bite();
+			sethp(-50); //take damage
+		}
 
 };
 class BabyGrasshopper : public GrassHopper
@@ -164,6 +175,9 @@ class BabyGrasshopper : public GrassHopper
 		{
 		}
 		virtual void doSomething();
+		virtual void getBitten() {
+			sethp(-50); //take damage
+		}
 		void stun() { //get stunned by water
 			if (m_stunned) {
 				return;

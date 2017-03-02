@@ -153,10 +153,15 @@ public:
 		cleanUp();
 	}
 	//helper functions for actor.h
-	bool isPebble(int x, int y) {
+	bool isValidTarget(int x, int y) { //check to see if an actor can move onto this space x,y
+		//first check if it's in bounds
+		if (x<1 || x>VIEW_WIDTH - 1)
+			return false;
+		if (y<1 || y>VIEW_HEIGHT - 1)
+			return false;
 		if (actor_map[y][x].size() != 0 && (actor_map[y][x])[0]->getID() == IID_ROCK) //this is okay because pebbles will always occupy the first location and nothing can collide
-			return true;
-		return false;
+			return false;
+		return true;
 	}
 	void addAdultGrasshopper(int x, int y) {
 		actor_map[y][x].push_back(new AdultGrasshopper(x, y, this));

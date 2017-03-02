@@ -1,12 +1,13 @@
 #include "Actor.h"
 #include "StudentWorld.h"
 #include <vector>
+#include <cmath>
 // Students:  Add code to this file (if you wish), Actor.h, StudentWorld.h, and StudentWorld.cpp
 void GrassHopper::attemptMove(Direction dir) { //if the grasshopper was able to move, then walkingdistance decrements and grasshopper moves. otherwise walking distance set to zero.
 	StudentWorld *temp = getWorld();
 	switch (dir) {
 	case up: {
-		if (getY() - 1 >= 1 && !temp->isPebble(getX(), getY() - 1)) { //or not collide with rock
+		if (temp->isValidTarget(getX(),getY()-1)) { //or not collide with rock
 			moveTo(getX(), getY() - 1);
 			m_walkingDistance--;
 			m_stunned = false;
@@ -17,7 +18,7 @@ void GrassHopper::attemptMove(Direction dir) { //if the grasshopper was able to 
 	}
 	case down:
 	{
-		if (getY() + 1 < VIEW_HEIGHT - 1 && !temp->isPebble(getX(), getY() + 1)) { //or not collide with rock
+		if (temp->isValidTarget(getX(), getY() + 1)) { //or not collide with rock
 			moveTo(getX(), getY() + 1);
 			m_walkingDistance--;
 			m_stunned = false;
@@ -28,7 +29,7 @@ void GrassHopper::attemptMove(Direction dir) { //if the grasshopper was able to 
 	}
 	case left:
 	{
-		if (getX() - 1 >= 1 && !temp->isPebble(getX() - 1, getY())) { //or not collide with rock
+		if (temp->isValidTarget(getX()-1, getY())) { //or not collide with rock
 			moveTo(getX() - 1, getY());
 			m_walkingDistance--;
 			m_stunned = false;
@@ -39,7 +40,7 @@ void GrassHopper::attemptMove(Direction dir) { //if the grasshopper was able to 
 	}
 	case right:
 	{
-		if (getX() + 1 < VIEW_WIDTH - 1 && !temp->isPebble(getX() + 1, getY())) { //or not collide with rock
+		if (temp->isValidTarget(getX()+1, getY())) { //or not collide with rock
 			moveTo(getX() + 1, getY());
 			m_walkingDistance--;
 			m_stunned = false;
@@ -52,7 +53,6 @@ void GrassHopper::attemptMove(Direction dir) { //if the grasshopper was able to 
 		break;
 	}//end switch statement
 }
-
 void GrassHopper::doAction() {
 	StudentWorld *temp = getWorld();
 	sethp(-1); //hurt the grasshopper every turn
@@ -63,20 +63,15 @@ void GrassHopper::doAction() {
 	}
 	if (m_stunned_turns <= 0) {
 		doSomething();
+		m_stunned_turns = 2;
 	}
 	else
 		m_stunned_turns--;
 }
-void BabyGrasshopper::doSomething() {
+void GrassHopper::GrabnGo() {
 	StudentWorld *temp = getWorld();
-	if (gethp() >= 1600) {//create and add a new adult grasshopper object in the square of the baby, kill the baby, and drop food
-		m_dead = true; //kill the baby
-		temp->addAdultGrasshopper(getX(), getY()); //birth the grasshopper
-		return; //TODO: make the grasshopper evolve
-	}
-	//now try to eat food if there is any
-	int move = 0;
 	Actor* food = temp->getFood(getX(), getY());
+	int move = 0;
 	if (food != nullptr) {
 		if (food->gethp() < 200) { //if the food is smaller than 200
 			sethp(food->gethp());//grasshopper eats whatever food there is
@@ -86,19 +81,56 @@ void BabyGrasshopper::doSomething() {
 			sethp(200); //grasshopper eats 200
 			food->sethp(-200);
 		}
-		move = randInt(0, 1);
+		move = randInt(0, 1); //50% chance of not moving if it has eaten
 	}
-	//try to move
-	if (move == 0) { //50% chance it doesn't  move 
+	if (move == 0) {
 		if (getWalkingDistance() <= 0) //if the grasshopper has finished walking, then reorient itself
 			reOrient();
 		attemptMove(getDirection()); //try moving one unit in that direction
-
-		m_stunned_turns = 2; //stun the baby grasshopper again
 	}
 }
+void BabyGrasshopper::doSomething() {
+	StudentWorld *temp = getWorld();
+	if (gethp() >= 1600) {//create and add a new adult grasshopper object in the square of the baby, kill the baby, and drop food
+		m_dead = true; //the baby will be deleted once the function returns
+		temp->addFood(getX(), getY(), 100); //add food
+		temp->addAdultGrasshopper(getX(), getY()); //birth the grasshopper
+		return; 
+	}
+	//now try to eat food if there is any
+	GrabnGo();
+}
 void AdultGrasshopper::doSomething() {
-
+	StudentWorld *temp = getWorld();
+	if (randInt(1, 3) == 1) { //one in 3 chance that the adult will bite
+		bite();
+		return;
+	}
+	if (randInt(1, 10) == 1) { //one in ten chance that it will jump
+		int randR, randAngle, randY, randX;
+		do{ //find an area within 10 squares without a pebble
+			double PI = 3.14159265;
+			randR = randInt(1, 10);
+			randAngle = randInt(0, 360);
+			randY = getY()+randR*sin(randAngle*PI / 180);
+			randX = getX()+randR*cos(randAngle*PI / 180);
+		} while (!temp->isValidTarget(randX, randY));
+		moveTo(randX, randY);
+		return;
+	}
+	//now try and eat, then try and move
+	GrabnGo();
+}
+void AdultGrasshopper::bite() { //causes the AdultGrasshopper to bite a random other insect on the square
+	StudentWorld *temp = getWorld();
+	vector<Actor*> insects = temp->getInsects(getX(), getY());
+	if (insects.size() > 1) { //if there are other insects on the square
+		Actor* victim = insects[randInt(0, insects.size() - 1)]; //randomly select a victim
+		while (victim == this) { //make sure the grasshopper doesn't bite itself lol
+			victim = insects[randInt(0, insects.size() - 1)];
+		}
+		victim->getBitten();
+	}
 }
 void Trap::doAction() {
 	StudentWorld *temp = getWorld();
