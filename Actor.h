@@ -41,10 +41,21 @@ class Organic :public Actor
 			m_dead = false;
 			m_stunned_turns = 0;
 		}
-		virtual void doAction() = 0;
-		virtual void stun() {}
-		virtual void poison() {}
-		virtual void getBitten() = 0;
+		virtual void doAction();
+		virtual void doSomething() {}
+		virtual void stun() { //get stunned by water
+			if (m_stunned) {
+				return;
+			}
+			m_stunned = true;
+			m_stunned_turns += 2;
+		}
+		virtual void poison() {
+			sethp(-150); //get wrecked by poison
+		}
+		virtual void getBitten() {
+			sethp(-50);
+		};
 		bool isDead() {
 			return m_dead;
 		}
@@ -64,6 +75,14 @@ class Organic :public Actor
 		bool m_dead;
 		int m_stunned_turns;
 };
+class Insect :public Organic {
+	public:
+		Insect(int imageID, int startX, int startY, Direction startDirection, int hp, StudentWorld *src)
+			:Organic(startX, startY, src, imageID, startDirection, 1, hp) {
+		
+		}
+
+};
 class AntHill : public Organic {
 	public:
 		AntHill(int startX, int startY, StudentWorld *src, Compiler* c) :
@@ -71,8 +90,11 @@ class AntHill : public Organic {
 		{
 			instructions = c;
 		}
-		void doAction();
-		void getBitten() {}
+		void doAction() {
+			Organic::doAction();
+			doSomething();
+		}
+		void doSomething();
 	private: 
 		Compiler* instructions;
 
@@ -85,10 +107,18 @@ class Ant : public Organic {
 			m_colony = antType;
 			m_counter = 0;
 		}
-		void doAction();
+		void doAction() {
+			Organic::doAction();
+			if (m_stunned_turns <= 0) {
+				doSomething();
+			}
+			else
+				m_stunned_turns--;
+		}
+		void doSomething() {} //implement this function
 		void getBitten() {}
 		void poison() {}
-		void getBitten() {}
+
 	private:
 		int m_counter;
 		int m_colony;
@@ -128,6 +158,8 @@ class Food : public Organic {
 			:Organic(startX, startY, src, IID_FOOD, Direction(2), 2, foodval) {
 		}
 		virtual void getBitten() {} //food can't get bitten
+		virtual void poison() {} //food can't get poisoned
+		virtual void stun() {} //food can't get stunned
 		void doAction() {} //food doesn't do anything
 };
 class GrassHopper : public Organic
@@ -139,13 +171,20 @@ class GrassHopper : public Organic
 			m_walkingDistance = randInt(2, 10);
 			m_direction = startDirection;
 		}
-		void doAction();
 		void GrabnGo(); //eats and tries to move
 		virtual void doSomething() = 0;
-		virtual void stun() = 0;
-		virtual void poison() = 0;
-		virtual void getBitten() = 0;
-
+		virtual void stun() { Organic::stun(); }
+		virtual void poison() { Organic::poison(); }
+		virtual void getBitten() { Organic::getBitten(); }
+		virtual void doAction() {
+			Organic::doAction();
+			if (m_stunned_turns <= 0) {
+				doSomething();
+				m_stunned_turns = 2;
+			}
+			else
+				m_stunned_turns--;
+		}
 		int getWalkingDistance() {
 			return m_walkingDistance;
 		}
@@ -192,20 +231,6 @@ class BabyGrasshopper : public GrassHopper
 		{
 		}
 		virtual void doSomething();
-		virtual void getBitten() {
-			sethp(-50); //take damage
-		}
-		void stun() { //get stunned by water
-			if (m_stunned) {
-				return;
-			}
-			m_stunned = true;
-			m_stunned_turns += 2;
-		}
-		void poison() {
-			sethp(-150); //get wrecked by poison
-		}
-
 };
 
 #endif // ACTOR_H_

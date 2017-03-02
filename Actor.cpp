@@ -53,20 +53,14 @@ void GrassHopper::attemptMove(Direction dir) { //if the grasshopper was able to 
 		break;
 	}//end switch statement
 }
-void GrassHopper::doAction() {
+void Organic::doAction() {
 	StudentWorld *temp = getWorld();
-	sethp(-1); //hurt the grasshopper every turn
+	sethp(-1); //lose health every turn
 	if (isDead()) {
 		temp->addFood(getX(), getY(), 100);
 		return;
 		//add 100 food to the simulation, its state has already been set to dead
 	}
-	if (m_stunned_turns <= 0) {
-		doSomething();
-		m_stunned_turns = 2;
-	}
-	else
-		m_stunned_turns--;
 }
 void GrassHopper::GrabnGo() {
 	StudentWorld *temp = getWorld();
@@ -139,42 +133,23 @@ void Trap::doAction() {
 		trigger(insects[i]);
 	}
 }
-void AntHill::doAction() {
-	StudentWorld* temp = getWorld();
-	sethp(-1);
-	if (isDead())
-		return;
+void AntHill::doSomething() {
+	StudentWorld *temp = getWorld();
 	Food* food = temp->getFood(getX(), getY());
 	if (food != nullptr) {
-		if (food->gethp() < 10000) { //if the food is smaller than 10000
-			sethp(food->gethp());//anthill eats whatever is there
-			food->sethp(-10000); //food dies
+		if (food->gethp() < 10000) { 
+			sethp(food->gethp());
+			food->sethp(-10000);
 		}
 		else {
-			sethp(10000); //hill eats 10000
+			sethp(10000); 
 			food->sethp(-10000);
 		}
 		return;
 	}
 	if (gethp() >= 2000) {
-		//produce an ant
+		//add an ant
 		sethp(-1500);
-		//increment the ant counter
+		//increase the count of ants in the world
 	}
-
-}
-void Ant::doAction() {
-	StudentWorld *temp = getWorld();
-	sethp(-1);
-	if (isDead()) {
-		temp->addFood(getX(), getY(), 100);
-		return;
-	}
-	if (m_stunned_turns <= 0) {
-		//interpCommand(m_counter);
-		m_counter++;
-		m_stunned_turns = 2;
-	}
-	else
-		m_stunned_turns--;
 }
