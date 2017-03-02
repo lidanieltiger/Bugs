@@ -5,6 +5,7 @@
 #include "Field.h"
 #include "Actor.h"
 #include "GameConstants.h"
+#include "Compiler.h"
 #include <string>
 #include <vector>
 using namespace std;
@@ -20,15 +21,22 @@ public:
 	}
 	virtual int init()
 	{
-		//1. Initialize the data structures used to keep track of your simulation’s virtual world.
-		//2. Load the current field details from the specified field data file.
-		//3. Allocate and insert all anthill objects, pebble objects, baby grasshopper objects, water
-		//pool objects, food objects, poison objects, etc.into the simulation world’s data structure,
-		//ensuring that the locations of these objects is as specified in the loaded field data file.
-		//load a field's layout using a Field.h
+		Compiler *compilerForEntrant0, *compilerForEntrant1,
+			*compilerForEntrant2, *compilerForEntrant3;
+		AntHill *ah0, *ah1, *ah2, *ah3;
+		std::vector<std::string> fileNames = getFilenamesOfAntPrograms();
+
+		compilerForEntrant0 = new Compiler;
+		std::string error;
+
+		if (!compilerForEntrant0->compile(fileNames[0], error))
+		{
+			setError(fileNames[0] + " " + error);
+			return GWSTATUS_LEVEL_ERROR;
+		}
+
 		Field f;
 		string fieldFile = getFieldFilename();
-		string error;
 		if (f.loadField(fieldFile, error) != Field::LoadResult::load_success)
 		{
 			setError(fieldFile + " " + error);
@@ -40,7 +48,11 @@ public:
 				switch (item) {
 					case(Field::FieldItem::empty):
 						break;
-					case (Field::FieldItem::anthill0):
+					case (Field::FieldItem::anthill0): 
+					{
+						ah0 = new AntHill(x,y,this,compilerForEntrant0); 
+						actor_map[y][x].push_back(ah0);
+					}
 						break;
 					case (Field::FieldItem::anthill1):
 						break;

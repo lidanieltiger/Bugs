@@ -139,3 +139,42 @@ void Trap::doAction() {
 		trigger(insects[i]);
 	}
 }
+void AntHill::doAction() {
+	StudentWorld* temp = getWorld();
+	sethp(-1);
+	if (isDead())
+		return;
+	Food* food = temp->getFood(getX(), getY());
+	if (food != nullptr) {
+		if (food->gethp() < 10000) { //if the food is smaller than 10000
+			sethp(food->gethp());//anthill eats whatever is there
+			food->sethp(-10000); //food dies
+		}
+		else {
+			sethp(10000); //hill eats 10000
+			food->sethp(-10000);
+		}
+		return;
+	}
+	if (gethp() >= 2000) {
+		//produce an ant
+		sethp(-1500);
+		//increment the ant counter
+	}
+
+}
+void Ant::doAction() {
+	StudentWorld *temp = getWorld();
+	sethp(-1);
+	if (isDead()) {
+		temp->addFood(getX(), getY(), 100);
+		return;
+	}
+	if (m_stunned_turns <= 0) {
+		//interpCommand(m_counter);
+		m_counter++;
+		m_stunned_turns = 2;
+	}
+	else
+		m_stunned_turns--;
+}

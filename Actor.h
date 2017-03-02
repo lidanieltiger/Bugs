@@ -1,6 +1,6 @@
 #ifndef ACTOR_H_
 #define ACTOR_H_
-
+#include "Compiler.h"
 #include "GraphObject.h"
 
 class StudentWorld;
@@ -39,6 +39,7 @@ class Organic :public Actor
 			m_hp = hp;
 			m_stunned = false;
 			m_dead = false;
+			m_stunned_turns = 0;
 		}
 		virtual void doAction() = 0;
 		virtual void stun() {}
@@ -61,6 +62,38 @@ class Organic :public Actor
 	protected:
 		bool m_stunned; //ants can be stunned
 		bool m_dead;
+		int m_stunned_turns;
+};
+class AntHill : public Organic {
+	public:
+		AntHill(int startX, int startY, StudentWorld *src, Compiler* c) :
+			Organic(startX, startY, src, IID_ANT_HILL, Direction(2), 2, 8999) 
+		{
+			instructions = c;
+		}
+		void doAction();
+		void getBitten() {}
+	private: 
+		Compiler* instructions;
+
+};
+class Ant : public Organic {
+	public:
+		Ant(int startX, int startY, StudentWorld *src, int antType, Compiler *c) :
+			Organic(startX, startY, src, antType, Direction(randInt(1, 4)), 1, 1500) {
+			instructions = c;
+			m_colony = antType;
+			m_counter = 0;
+		}
+		void doAction();
+		void getBitten() {}
+		void poison() {}
+		void getBitten() {}
+	private:
+		int m_counter;
+		int m_colony;
+		Compiler* instructions;
+
 };
 class Trap :public Actor
 {
@@ -105,7 +138,6 @@ class GrassHopper : public Organic
 		{
 			m_walkingDistance = randInt(2, 10);
 			m_direction = startDirection;
-			m_stunned_turns = 0;
 		}
 		void doAction();
 		void GrabnGo(); //eats and tries to move
@@ -131,8 +163,6 @@ class GrassHopper : public Organic
 	private:
 		int m_walkingDistance;
 		Direction m_direction;
-	protected:
-		int m_stunned_turns;
 
 };
 class AdultGrasshopper : public GrassHopper

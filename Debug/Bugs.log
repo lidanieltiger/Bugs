@@ -1,19 +1,31 @@
 ﻿  Actor.cpp
-c:\users\daniel\downloads\bugs-skeleton-windows\bugs\bugs\studentworld.h(100): warning C4018: '<': signed/unsigned mismatch
-c:\users\daniel\downloads\bugs-skeleton-windows\bugs\bugs\studentworld.h(167): warning C4018: '<': signed/unsigned mismatch
-c:\users\daniel\downloads\bugs-skeleton-windows\bugs\bugs\studentworld.h(177): warning C4018: '<': signed/unsigned mismatch
-c:\users\daniel\downloads\bugs-skeleton-windows\bugs\bugs\studentworld.h(186): warning C4018: '<': signed/unsigned mismatch
+c:\users\daniel\downloads\bugs-skeleton-windows\bugs\bugs\studentworld.h(24): warning C4101: 'compilerForEntrant1': unreferenced local variable
+c:\users\daniel\downloads\bugs-skeleton-windows\bugs\bugs\studentworld.h(26): warning C4101: 'ah1': unreferenced local variable
+c:\users\daniel\downloads\bugs-skeleton-windows\bugs\bugs\studentworld.h(25): warning C4101: 'compilerForEntrant3': unreferenced local variable
+c:\users\daniel\downloads\bugs-skeleton-windows\bugs\bugs\studentworld.h(26): warning C4101: 'ah3': unreferenced local variable
+c:\users\daniel\downloads\bugs-skeleton-windows\bugs\bugs\studentworld.h(26): warning C4101: 'ah2': unreferenced local variable
+c:\users\daniel\downloads\bugs-skeleton-windows\bugs\bugs\studentworld.h(25): warning C4101: 'compilerForEntrant2': unreferenced local variable
+c:\users\daniel\downloads\bugs-skeleton-windows\bugs\bugs\studentworld.h(112): warning C4018: '<': signed/unsigned mismatch
+c:\users\daniel\downloads\bugs-skeleton-windows\bugs\bugs\studentworld.h(179): warning C4018: '<': signed/unsigned mismatch
+c:\users\daniel\downloads\bugs-skeleton-windows\bugs\bugs\studentworld.h(189): warning C4018: '<': signed/unsigned mismatch
+c:\users\daniel\downloads\bugs-skeleton-windows\bugs\bugs\studentworld.h(198): warning C4018: '<': signed/unsigned mismatch
 c:\users\daniel\downloads\bugs-skeleton-windows\bugs\bugs\actor.cpp(115): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
 c:\users\daniel\downloads\bugs-skeleton-windows\bugs\bugs\actor.cpp(116): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
 c:\users\daniel\downloads\bugs-skeleton-windows\bugs\bugs\actor.cpp(138): warning C4018: '<': signed/unsigned mismatch
   Generating Code...
   Compiling...
   StudentWorld.cpp
-c:\users\daniel\downloads\bugs-skeleton-windows\bugs\bugs\studentworld.h(100): warning C4018: '<': signed/unsigned mismatch
-c:\users\daniel\downloads\bugs-skeleton-windows\bugs\bugs\studentworld.h(167): warning C4018: '<': signed/unsigned mismatch
-c:\users\daniel\downloads\bugs-skeleton-windows\bugs\bugs\studentworld.h(177): warning C4018: '<': signed/unsigned mismatch
-c:\users\daniel\downloads\bugs-skeleton-windows\bugs\bugs\studentworld.h(186): warning C4018: '<': signed/unsigned mismatch
+c:\users\daniel\downloads\bugs-skeleton-windows\bugs\bugs\studentworld.h(24): warning C4101: 'compilerForEntrant1': unreferenced local variable
+c:\users\daniel\downloads\bugs-skeleton-windows\bugs\bugs\studentworld.h(26): warning C4101: 'ah1': unreferenced local variable
+c:\users\daniel\downloads\bugs-skeleton-windows\bugs\bugs\studentworld.h(25): warning C4101: 'compilerForEntrant3': unreferenced local variable
+c:\users\daniel\downloads\bugs-skeleton-windows\bugs\bugs\studentworld.h(26): warning C4101: 'ah3': unreferenced local variable
+c:\users\daniel\downloads\bugs-skeleton-windows\bugs\bugs\studentworld.h(26): warning C4101: 'ah2': unreferenced local variable
+c:\users\daniel\downloads\bugs-skeleton-windows\bugs\bugs\studentworld.h(25): warning C4101: 'compilerForEntrant2': unreferenced local variable
+c:\users\daniel\downloads\bugs-skeleton-windows\bugs\bugs\studentworld.h(112): warning C4018: '<': signed/unsigned mismatch
+c:\users\daniel\downloads\bugs-skeleton-windows\bugs\bugs\studentworld.h(179): warning C4018: '<': signed/unsigned mismatch
+c:\users\daniel\downloads\bugs-skeleton-windows\bugs\bugs\studentworld.h(189): warning C4018: '<': signed/unsigned mismatch
+c:\users\daniel\downloads\bugs-skeleton-windows\bugs\bugs\studentworld.h(198): warning C4018: '<': signed/unsigned mismatch
   Generating Code...
-c:\users\daniel\downloads\bugs-skeleton-windows\bugs\bugs\studentworld.h(76): warning C4715: 'StudentWorld::init': not all control paths return a value
+c:\users\daniel\downloads\bugs-skeleton-windows\bugs\bugs\studentworld.h(88): warning C4715: 'StudentWorld::init': not all control paths return a value
   Bugs.vcxproj -> C:\Users\Daniel\Downloads\Bugs-skeleton-windows\Bugs\Debug\Bugs.exe
   Bugs.vcxproj -> C:\Users\Daniel\Downloads\Bugs-skeleton-windows\Bugs\Debug\Bugs.pdb (Full PDB)
