@@ -70,7 +70,7 @@ void GrassHopper::doAction() {
 }
 void GrassHopper::GrabnGo() {
 	StudentWorld *temp = getWorld();
-	Actor* food = temp->getFood(getX(), getY());
+	Food* food = temp->getFood(getX(), getY());
 	int move = 0;
 	if (food != nullptr) {
 		if (food->gethp() < 200) { //if the food is smaller than 200
@@ -123,9 +123,9 @@ void AdultGrasshopper::doSomething() {
 }
 void AdultGrasshopper::bite() { //causes the AdultGrasshopper to bite a random other insect on the square
 	StudentWorld *temp = getWorld();
-	vector<Actor*> insects = temp->getInsects(getX(), getY());
+	vector<Organic*> insects = temp->getInsects(getX(), getY());
 	if (insects.size() > 1) { //if there are other insects on the square
-		Actor* victim = insects[randInt(0, insects.size() - 1)]; //randomly select a victim
+		Organic* victim = insects[randInt(0, insects.size() - 1)]; //randomly select a victim
 		while (victim == this) { //make sure the grasshopper doesn't bite itself lol
 			victim = insects[randInt(0, insects.size() - 1)];
 		}
@@ -134,7 +134,7 @@ void AdultGrasshopper::bite() { //causes the AdultGrasshopper to bite a random o
 }
 void Trap::doAction() {
 	StudentWorld *temp = getWorld();
-	vector<Actor*> insects = temp->getInsects(getX(),getY());
+	vector<Organic*> insects = temp->getInsects(getX(),getY());
 	for (int i = 0; i < insects.size(); i++) {
 		trigger(insects[i]);
 	}

@@ -12,31 +12,14 @@ class Actor : public GraphObject
 			:GraphObject(imageID, startX, startY, startDirection, depth)
 		{
 			m_world = src;
-			m_id = imageID;
-			m_dead = false;
 		}
 		virtual void doAction() = 0;
-		//functions to be overriden in organic
-		virtual void sethp(int add) {}
-		virtual int gethp() { return 0; }
-		virtual void stun() {}
-		virtual void poison() {}
-		virtual void getBitten() {}
 
 		StudentWorld* getWorld() {
 			return m_world;
 		}
-		bool isDead() {
-			return m_dead;
-		}
-		int getID() {
-			return m_id;
-		}
-	protected:
-		bool m_dead;
 	private:
 		StudentWorld *m_world;
-		int m_id;
 };
 class Pebble :public Actor
 {
@@ -47,33 +30,6 @@ class Pebble :public Actor
 		void doAction() {//do nothing
 		}
 };
-class Trap :public Actor
-{
-	public:
-		Trap(int startX, int startY, StudentWorld *src, int imageID)
-			:Actor(imageID, startX, startY, Direction(2), 2, src)
-		{}
-		void doAction();//run through the victims
-		virtual void trigger(Actor* victim) = 0;
-};
-class Water :public Trap {
-	public:
-		Water(int startX, int startY, StudentWorld *src)
-			:Trap(startX, startY, src, IID_WATER_POOL)
-		{}
-		void trigger(Actor* victim) {
-			victim->stun();
-		}
-};
-class Poison :public Trap {
-public:
-	Poison(int startX, int startY, StudentWorld *src)
-		:Trap(startX, startY, src, IID_POISON)
-	{}
-	void trigger(Actor* victim) {
-		victim->poison();
-	}
-};
 class Organic :public Actor
 {
 	public:
@@ -82,12 +38,15 @@ class Organic :public Actor
 		{
 			m_hp = hp;
 			m_stunned = false;
+			m_dead = false;
 		}
 		virtual void doAction() = 0;
 		virtual void stun() {}
 		virtual void poison() {}
 		virtual void getBitten() = 0;
-
+		bool isDead() {
+			return m_dead;
+		}
 		void sethp(int life) {
 			m_hp += life;
 			if (m_hp < 0) { 
@@ -101,6 +60,34 @@ class Organic :public Actor
 		int m_hp;
 	protected:
 		bool m_stunned;
+		bool m_dead;
+};
+class Trap :public Actor
+{
+public:
+	Trap(int startX, int startY, StudentWorld *src, int imageID)
+		:Actor(imageID, startX, startY, Direction(2), 2, src)
+	{}
+	void doAction();//run through the victims
+	virtual void trigger(Organic* victim) = 0;
+};
+class Water :public Trap {
+public:
+	Water(int startX, int startY, StudentWorld *src)
+		:Trap(startX, startY, src, IID_WATER_POOL)
+	{}
+	void trigger(Organic* victim) {
+		victim->stun();
+	}
+};
+class Poison :public Trap {
+public:
+	Poison(int startX, int startY, StudentWorld *src)
+		:Trap(startX, startY, src, IID_POISON)
+	{}
+	void trigger(Organic* victim) {
+		victim->poison();
+	}
 };
 class Food : public Organic {
 	public:

@@ -101,7 +101,8 @@ public:
 					Actor *temp = (actor_map[y][x])[i];
 					int oldX = temp->getX(), oldY = temp->getY();
 					temp->doAction();
-					if (temp->isDead())
+					Organic* insect = dynamic_cast<Organic*>(temp);
+					if (insect!=nullptr&&insect->isDead()) //only insects can be dead/deleted
 						deletefromStructure(i, x, y);
 					else
 					{
@@ -115,11 +116,7 @@ public:
 			}
 		 }
 
-
 		 /*
-		 // Remove newly-dead actors after each tick
-		 removeDeadSimulationObjects(); // delete dead simulation objects
-		 // Update the simulation Status Line
 		 updateDisplayText(); // update the ticks/ant stats text at screen top
 		 // If the simulation’s over (ticks == 2000) then see if we have a winner
 		 if (theSimulationIsOver())
@@ -168,26 +165,28 @@ public:
 	}
 	void addFood(int x, int y, int add) {
 		for (int i = 0; i < actor_map[y][x].size(); i++) {
-			if (actor_map[y][x][i]->getID() == IID_FOOD) {
-				actor_map[y][x][i]->sethp(add);
+			Food* food = dynamic_cast<Food*>(actor_map[y][x][i]);
+			if (food != nullptr){
+				food->sethp(add);
 				return;
 			}
 		}
 		actor_map[y][x].push_back(new Food(x, y, this, add));
 	}
-	Actor* getFood(int x, int y) {
+	Food* getFood(int x, int y) {
 		for (int i = 0; i < actor_map[y][x].size(); i++) {
-			if (actor_map[y][x][i]->getID() == IID_FOOD) {
-				return actor_map[y][x][i];
-			}
+			Food* food = dynamic_cast<Food*>(actor_map[y][x][i]);
+			if(food!=nullptr)
+				return food;
 		}
 		return nullptr;
 	}
-	vector<Actor*> getInsects(int x, int y) {
-		vector<Actor*> insects;
+	vector<Organic*> getInsects(int x, int y) {
+		vector<Organic*> insects;
 		for (int i = 0; i < actor_map[y][x].size(); i++) {
-			if (actor_map[y][x][i]->getID() == IID_BABY_GRASSHOPPER)
-				insects.push_back(actor_map[y][x][i]);
+			Organic* insect = dynamic_cast<Organic*>(actor_map[y][x][i]);
+			if(insect!=nullptr)
+				insects.push_back(insect);
 		}
 		return insects;
 	}
