@@ -1,0 +1,7 @@
+﻿  StudentWorld.cpp
+c:\users\daniel\downloads\bugs-skeleton-windows\bugs\bugs\studentworld.h(52): error C2243: 'type cast': conversion from 'Food *' to 'Actor *' exists, but is inaccessible
+c:\users\daniel\downloads\bugs-skeleton-windows\bugs\bugs\studentworld.h(88): warning C4018: '<': signed/unsigned mismatch
+  Actor.cpp
+c:\users\daniel\downloads\bugs-skeleton-windows\bugs\bugs\studentworld.h(52): error C2243: 'type cast': conversion from 'Food *' to 'Actor *' exists, but is inaccessible
+c:\users\daniel\downloads\bugs-skeleton-windows\bugs\bugs\studentworld.h(88): warning C4018: '<': signed/unsigned mismatch
+  Generating Code...
