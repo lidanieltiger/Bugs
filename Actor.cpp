@@ -48,3 +48,42 @@ void GrassHopper::attemptMove(Direction dir) { //if the grasshopper was able to 
 		break;
 	}//end switch statement
 }
+
+void BabyGrasshopper::doAction() {
+	StudentWorld *temp = getWorld();
+	sethp(-1); //hurt the grasshopper every turn
+	if (isDead()) {
+		temp->addFood(getX(), getY(), 100);
+		return;
+		//add 100 food to the simulation, its state has already been set to dead
+	}
+	if (m_stunned_turns <= 0) {
+		if (gethp() >= 1600) {//create and add a new adult grasshopper object in the square of the baby, kill the baby, and drop food
+			return;
+		}
+		//now try to eat food if there is any
+		int move = 0;
+		Actor* food = temp->getFood(getX(),getY());
+		if (food!=nullptr) {
+			if (food->gethp() < 200) { //if the food is smaller than 200
+				sethp(food->gethp());//grasshopper eats whatever food there is
+				food->sethp(-200); //food dies
+			}
+			else {
+				sethp(200); //grasshopper eats 200
+				food->sethp(-200);
+			}
+			move = randInt(0, 1);
+		}
+		//try to move
+		if (move == 0) { //50% chance it doesn't  move 
+			if (getWalkingDistance() <= 0) //if the grasshopper has finished walking, then reorient itself
+				reOrient();
+			attemptMove(getDirection()); //try moving one unit in that direction
+
+			m_stunned_turns = 2; //stun the baby grasshopper again
+		}
+	}
+	else
+		m_stunned_turns--;
+}

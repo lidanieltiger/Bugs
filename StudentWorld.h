@@ -84,7 +84,7 @@ public:
 		delete temp;
 	}
 	void setDisplayText() {
-		string s = to_string(m_tick);
+		string s = "Ticks: "+to_string(m_tick);
 		setGameStatText(s);
 	}
 	virtual int move()
@@ -150,10 +150,28 @@ public:
 	~StudentWorld() { //destructor destroy all the actors
 		cleanUp();
 	}
+	//helper functions for actor.h
 	bool isPebble(int x, int y) {
 		if (actor_map[y][x].size() != 0 && (actor_map[y][x])[0]->getID() == IID_ROCK)
 			return true;
 		return false;
+	}
+	void addFood(int x, int y, int add) {
+		for (int i = 0; i < actor_map[y][x].size(); i++) {
+			if (actor_map[y][x][i]->getID() == IID_FOOD) {
+				actor_map[y][x][i]->sethp(add);
+				return;
+			}
+		}
+		actor_map[y][x].push_back(new Food(x, y, this, add));
+	}
+	Actor* getFood(int x, int y) {
+		for (int i = 0; i < actor_map[y][x].size(); i++) {
+			if (actor_map[y][x][i]->getID() == IID_FOOD) {
+				return actor_map[y][x][i];
+			}
+		}
+		return nullptr;
 	}
 private:
 	int m_tick;

@@ -16,6 +16,11 @@ class Actor : public GraphObject
 			m_dead = false;
 		}
 		virtual void doAction() = 0;
+		//functions to be overriden in organic
+		virtual void sethp(int add) {}
+		virtual int gethp() { return 0; }
+		virtual bool canStun() { return false; } //for the water pool so it can't get repeatedly stunned
+
 		StudentWorld* getWorld() {
 			return m_world;
 		}
@@ -85,6 +90,8 @@ class GrassHopper : public Organic
 			return m_direction;
 		}
 		void attemptMove(Direction dir); //if the grasshopper was able to move, then walkingdistance decrements and grasshopper moves. otherwise walking distance set to zero.
+		//if attemptMove returns true, then set stunned to false because it got off the water pool
+
 		void reOrient() { //give the grasshopper new direction and walkingdistance
 			m_direction = Direction(randInt(1, 4));
 			setDirection(m_direction);
@@ -103,27 +110,7 @@ class BabyGrasshopper : public GrassHopper
 		{
 			m_stunned_turns = 0;
 		}
-		virtual void doAction()
-		{
-			sethp(-1); //hurt the grasshopper every turn
-			if (isDead())
-				return;
-				//add 100 food to the simulation, its state has already been set to dead
-			if (m_stunned_turns <= 0) {
-				if (gethp() >= 1600) {//create and add a new adult grasshopper object in the square of the baby, kill the baby, and drop food
-					return;
-				}
-				//then try to eat food
-				//try to move
-				if (getWalkingDistance() <= 0) //if the grasshopper has finished walking, then reorient itself
-					reOrient();
-				attemptMove(getDirection()); //try moving one unit in that direction
-
-				m_stunned_turns = 2; //stun the baby grasshopper again
-			}
-			else
-				m_stunned_turns--;
-		}
+		virtual void doAction();
 	private:
 		int m_stunned_turns;
 };
