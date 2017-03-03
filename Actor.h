@@ -13,7 +13,6 @@ class Actor : public GraphObject
 			m_world = src;
 		}
 		virtual void doAction() = 0;
-
 		StudentWorld* getWorld() {
 			return m_world;
 		}
@@ -52,6 +51,10 @@ class Organic :public Actor
 		bool isDead() {
 			return m_dead;
 		}
+		void setDead()
+		{
+			m_dead = true;
+		}
 		void sethp(int life) {
 			m_hp += life;
 			if (m_hp < 0) { 
@@ -63,35 +66,52 @@ class Organic :public Actor
 		}
 	private:
 		int m_hp;
-	protected:
 		bool m_dead;
 };
 class Insect :public Organic {
-public:
-	Insect(int imageID, int startX, int startY, Direction startDirection, int hp, StudentWorld *src)
-		:Organic(startX, startY, src, imageID, startDirection, 1, hp) {
-		m_stunned = false;
-		m_stunned_turns = 0;
-		m_direction = startDirection;
-	}
-	virtual int getTeam() { return 5; } //return something that's on no one's team by default
-	virtual void stun() { //get stunned by water
-		if (m_stunned) {
-			return;
+	public:
+		Insect(int imageID, int startX, int startY, Direction startDirection, int hp, StudentWorld *src)
+			:Organic(startX, startY, src, imageID, startDirection, 1, hp) {
+			m_stunned = false;
+			m_stunned_turns = 0;
+			m_direction = startDirection;
 		}
-		m_stunned = true;
-		m_stunned_turns += 2;
-	}
-	virtual void poison() {
-		sethp(-150); //get wrecked by poison
-	}
-	virtual void getBitten() {
-		sethp(-50);
-	};
-protected:
-	bool m_stunned; //ants can be stunned
-	int m_stunned_turns;
-	Direction m_direction;
+		virtual int getTeam() { return 5; } //return something that's on no one's team by default
+		virtual void stun() { //get stunned by water
+			if (m_stunned) {
+				return;
+			}
+			m_stunned = true;
+			m_stunned_turns += 2;
+		}
+		virtual void poison() {
+			sethp(-150); //get wrecked by poison
+		}
+		virtual void getBitten() {
+			sethp(-50);
+		};
+		Direction getDirection() {
+			return m_direction;
+		}
+		void setDir(Direction dir) {
+			m_direction = dir;
+		}
+		bool is_Stunned() {
+			return m_stunned;
+		}
+		void setStun(bool setter) {
+			m_stunned = setter;
+		}
+		int getStunnedTurns() {
+			return m_stunned_turns;
+		}
+		void setStunnedTurns(int stun) {
+			m_stunned_turns += stun;
+		}
+	private:
+		bool m_stunned; //ants can be stunned
+		int m_stunned_turns;
+		Direction m_direction;
 };
 class Trap :public Actor
 {
@@ -169,12 +189,18 @@ class Ant : public Insect {
 		}
 		void doAction() {
 			Organic::doAction();
-			if (m_stunned_turns > 0) {
-				m_stunned_turns--;
+			if (getStunnedTurns() > 0) {
+				setStunnedTurns(-1);
 			}
 			else 
 				doSomething();
 		}
+		virtual void die();
+		void getBitten() {
+			sethp(-50);
+			m_bitten = true;
+		};
+	private:
 		void doSomething();
 		void attemptMove(Direction dir);
 		bool getDanger();
@@ -192,12 +218,7 @@ class Ant : public Insect {
 		int getTeam() {
 			return m_colony;
 		}
-		void getBitten() {
-			sethp(-50);
-			m_bitten = true;
-		};
-		virtual void die();
-	private:
+
 		int m_counter;
 		int m_colony;
 		Compiler* instructions;
@@ -223,31 +244,27 @@ class GrassHopper : public Insect
 		}
 		void GrabnGo(); //eats and tries to move
 		virtual void doSomething() = 0;
-		virtual void stun() { Insect::stun(); }
-		virtual void poison() { Insect::poison(); }
-		virtual void getBitten() { Insect::getBitten(); }
 		virtual void doAction() {
 			Organic::doAction();
-			if (m_stunned_turns <= 0) {
+			if (getStunnedTurns() <= 0) {
 				doSomething();
-				m_stunned_turns = 2;
+				setStunnedTurns(2);
 			}
 			else
-				m_stunned_turns--;
+				setStunnedTurns(-1);
+		}
+		void reOrient() { //give the grasshopper new direction and walkingdistance
+			Direction temp = Direction(randInt(1, 4));
+			setDir(temp);
+			setDirection(temp);
+			m_walkingDistance = randInt(2, 10);
 		}
 		int getWalkingDistance() {
 			return m_walkingDistance;
 		}
-		void attemptMove(Direction dir); //if the grasshopper was able to move, then walkingdistance decrements and grasshopper moves. otherwise walking distance set to zero.
-
-		void reOrient() { //give the grasshopper new direction and walkingdistance
-			m_direction = Direction(randInt(1, 4));
-			setDirection(m_direction);
-			m_walkingDistance = randInt(2, 10);
-		}
 	private:
 		int m_walkingDistance;
-
+		void attemptMove(Direction dir); //if the grasshopper was able to move, then walkingdistance decrements and grasshopper moves. otherwise walking distance set to zero.
 };
 class AdultGrasshopper : public GrassHopper
 {

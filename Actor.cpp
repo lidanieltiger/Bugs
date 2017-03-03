@@ -10,7 +10,7 @@ void GrassHopper::attemptMove(Direction dir) { //if the grasshopper was able to 
 		if (temp->isValidTarget(getX(),getY()-1)) { //or not collide with rock
 			moveTo(getX(), getY() - 1);
 			m_walkingDistance--;
-			m_stunned = false;
+			setStun(false);
 		}
 		else
 			m_walkingDistance = 0;
@@ -21,7 +21,7 @@ void GrassHopper::attemptMove(Direction dir) { //if the grasshopper was able to 
 		if (temp->isValidTarget(getX(), getY() + 1)) { //or not collide with rock
 			moveTo(getX(), getY() + 1);
 			m_walkingDistance--;
-			m_stunned = false;
+			setStun(false);
 		}
 		else
 			m_walkingDistance = 0;
@@ -32,7 +32,7 @@ void GrassHopper::attemptMove(Direction dir) { //if the grasshopper was able to 
 		if (temp->isValidTarget(getX()-1, getY())) { //or not collide with rock
 			moveTo(getX() - 1, getY());
 			m_walkingDistance--;
-			m_stunned = false;
+			setStun(false);
 		}
 		else
 			m_walkingDistance = 0;
@@ -43,7 +43,7 @@ void GrassHopper::attemptMove(Direction dir) { //if the grasshopper was able to 
 		if (temp->isValidTarget(getX()+1, getY())) { //or not collide with rock
 			moveTo(getX() + 1, getY());
 			m_walkingDistance--;
-			m_stunned = false;
+			setStun(false);
 		}
 		else
 			m_walkingDistance = 0;
@@ -94,7 +94,7 @@ void GrassHopper::GrabnGo() {
 void BabyGrasshopper::doSomething() {
 	StudentWorld *temp = getWorld();
 	if (gethp() >= 1600) {//create and add a new adult grasshopper object in the square of the baby, kill the baby, and drop food
-		m_dead = true; //the baby will be deleted once the function returns
+		setDead(); //the baby will be deleted once the function returns
 		temp->addFood(getX(), getY(), 100); //add food
 		temp->addAdultGrasshopper(getX(), getY()); //birth the grasshopper
 		return; 
@@ -163,7 +163,7 @@ void Ant::doSomething() {
 		if (instructions->getCommand(m_counter, cmd)) {
 			switch (cmd.opcode) {
 				case Compiler::Opcode::moveForward:
-					attemptMove(m_direction); //remember if it was blocked/remember it hasn't been bit.
+					attemptMove(getDirection()); //remember if it was blocked/remember it hasn't been bit.
 					m_counter++;
 					return;
 					break;
@@ -213,26 +213,26 @@ void Ant::doSomething() {
 						return;
 						break;
 					case Compiler::faceRandomDirection:
-						m_direction = Direction(randInt(1, 4));
-						setDirection(m_direction);
+						setDir(Direction(randInt(1, 4)));
+						setDirection(getDirection());
 						m_counter++;
 						return;
 						break;
 					case Compiler::rotateClockwise:
 						if (getDirection() == 4)
-							m_direction = Direction(1);
+							setDir(Direction(1));
 						else
-							m_direction = Direction(getDirection() + 1);
-						setDirection(m_direction);
+							setDir(Direction(getDirection() + 1));
+						setDirection(getDirection());
 						m_counter++;
 						return;
 						break;
 					case Compiler::rotateCounterClockwise:
 						if (getDirection() == 1)
-							m_direction = Direction(4);
+							setDir(Direction(4));
 						else
-							m_direction = Direction(getDirection() - 1);
-						setDirection(m_direction);
+							setDir(Direction(getDirection() - 1));
+						setDirection(getDirection());
 						m_counter++;
 						return;
 						break;
@@ -253,7 +253,7 @@ void Ant::doSomething() {
 			}
 		}
 		else {
-			m_dead = true;
+			setDead();
 			return;
 		}
 			
@@ -353,7 +353,7 @@ void Ant::attemptMove(Direction dir) {
 	case up: {
 		if (temp->isValidTarget(getX(), getY() - 1)) { //or not collide with rock
 			moveTo(getX(), getY() - 1);
-			m_stunned = false;
+			setStun(false);
 			m_bitten = false;
 			m_blocked = false;
 		}
@@ -365,7 +365,7 @@ void Ant::attemptMove(Direction dir) {
 	{
 		if (temp->isValidTarget(getX(), getY() + 1)) { //or not collide with rock
 			moveTo(getX(), getY() + 1);
-			m_stunned = false;
+			setStun(false);
 			m_bitten = false;
 			m_blocked = false;
 		}
@@ -377,7 +377,7 @@ void Ant::attemptMove(Direction dir) {
 	{
 		if (temp->isValidTarget(getX() - 1, getY())) { //or not collide with rock
 			moveTo(getX() - 1, getY());
-			m_stunned = false;
+			setStun(false);
 			m_bitten = false;
 			m_blocked = false;
 		}
@@ -389,7 +389,7 @@ void Ant::attemptMove(Direction dir) {
 	{
 		if (temp->isValidTarget(getX() + 1, getY())) { //or not collide with rock
 			moveTo(getX() + 1, getY());
-			m_stunned = false;
+			setStun(false);
 			m_bitten = false;
 			m_blocked = false;
 		}
@@ -403,7 +403,7 @@ void Ant::attemptMove(Direction dir) {
 }
 bool Ant::getDanger() {
 	StudentWorld *temp = getWorld();
-	switch (m_direction) {
+	switch (getDirection()) {
 	case up: {
 		if (temp->isValidTarget(getX(), getY() - 1)) { //or not collide with rock
 			if (checkDanger(temp->getTraps(getX(), getY() - 1), temp->getInsects(getX(), getY() - 1)))
@@ -451,7 +451,7 @@ bool Ant::getDanger() {
 }
 bool Ant::isPheromone() {
 	StudentWorld *temp = getWorld();
-	switch (m_direction) {
+	switch (getDirection()) {
 	case up: {
 		if (temp->isValidTarget(getX(), getY() - 1)) { //or not collide with rock
 			if (temp->getPheromone(getX(), getY() - 1, m_colony)!=nullptr)
