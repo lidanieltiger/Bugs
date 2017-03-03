@@ -57,6 +57,22 @@ void Organic::die() {
 	StudentWorld *temp = getWorld();
 	temp->addFood(getX(), getY(), 100);
 }
+bool Organic::eat(int capacity) {
+	StudentWorld *temp = getWorld();
+	Food* food = temp->getFood(getX(), getY());
+	if (food != nullptr) {
+		if (food->gethp() < capacity) {
+			sethp(food->gethp());
+			food->sethp(-capacity);
+		}
+		else {
+			sethp(capacity);
+			food->sethp(-capacity);
+		}
+		return true;
+	}
+	return false;
+}
 void Pheromone::doAction() {
 	StudentWorld *temp = getWorld();
 	sethp(-1); //lose health every turn
@@ -66,19 +82,9 @@ void Pheromone::doAction() {
 }
 void GrassHopper::GrabnGo() {
 	StudentWorld *temp = getWorld();
-	Food* food = temp->getFood(getX(), getY());
 	int move = 0;
-	if (food != nullptr) {
-		if (food->gethp() < 200) { //if the food is smaller than 200
-			sethp(food->gethp());//grasshopper eats whatever food there is
-			food->sethp(-200); //food dies
-		}
-		else {
-			sethp(200); //grasshopper eats 200
-			food->sethp(-200);
-		}
+	if(eat(200))
 		move = randInt(0, 1); //50% chance of not moving if it has eaten
-	}
 	if (move == 0) {
 		if (getWalkingDistance() <= 0) //if the grasshopper has finished walking, then reorient itself
 			reOrient();
@@ -138,17 +144,8 @@ void Trap::doAction() {
 void AntHill::doSomething() {
 	StudentWorld *temp = getWorld();
 	Food* food = temp->getFood(getX(), getY());
-	if (food != nullptr) {
-		if (food->gethp() < 10000) { 
-			sethp(food->gethp());
-			food->sethp(-10000);
-		}
-		else {
-			sethp(10000); 
-			food->sethp(-10000);
-		}
+	if(eat(10000))
 		return;
-	}
 	if (gethp() >= 2000) {
 		//add an ant
 		temp->updateScore(m_colony,1); //update the score
@@ -171,17 +168,7 @@ void Ant::doSomething() {
 					return;
 					break;
 				case Compiler::Opcode::eatFood:
-					food = temp->getFood(getX(), getY());
-					if (food != nullptr) {
-						if (food->gethp() < 100) {
-							sethp(food->gethp());
-							food->sethp(-100);
-						}
-						else {
-							sethp(100);
-							food->sethp(-100);
-						}
-					}
+					eat(100);
 					m_counter++;
 					return;
 					break;

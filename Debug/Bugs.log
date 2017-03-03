@@ -1,5 +1,5 @@
 ﻿  Actor.cpp
-c:\users\daniel\downloads\bugs-skeleton-windows\bugs\bugs\actor.h(184): warning C4018: '<': signed/unsigned mismatch
+c:\users\daniel\downloads\bugs-skeleton-windows\bugs\bugs\actor.h(185): warning C4018: '<': signed/unsigned mismatch
 c:\users\daniel\downloads\bugs-skeleton-windows\bugs\bugs\studentworld.h(152): warning C4018: '<': signed/unsigned mismatch
 c:\users\daniel\downloads\bugs-skeleton-windows\bugs\bugs\studentworld.h(223): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
 c:\users\daniel\downloads\bugs-skeleton-windows\bugs\bugs\studentworld.h(225): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
@@ -12,27 +12,9 @@ c:\users\daniel\downloads\bugs-skeleton-windows\bugs\bugs\studentworld.h(301): w
 c:\users\daniel\downloads\bugs-skeleton-windows\bugs\bugs\studentworld.h(309): warning C4018: '<': signed/unsigned mismatch
 c:\users\daniel\downloads\bugs-skeleton-windows\bugs\bugs\studentworld.h(318): warning C4018: '<': signed/unsigned mismatch
 c:\users\daniel\downloads\bugs-skeleton-windows\bugs\bugs\studentworld.h(327): warning C4018: '<': signed/unsigned mismatch
-c:\users\daniel\downloads\bugs-skeleton-windows\bugs\bugs\actor.cpp(111): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
-c:\users\daniel\downloads\bugs-skeleton-windows\bugs\bugs\actor.cpp(112): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
-c:\users\daniel\downloads\bugs-skeleton-windows\bugs\bugs\actor.cpp(134): warning C4018: '<': signed/unsigned mismatch
-c:\users\daniel\downloads\bugs-skeleton-windows\bugs\bugs\actor.cpp(304): warning C4018: '<': signed/unsigned mismatch
-  Generating Code...
-  Compiling...
-  StudentWorld.cpp
-c:\users\daniel\downloads\bugs-skeleton-windows\bugs\bugs\actor.h(184): warning C4018: '<': signed/unsigned mismatch
-c:\users\daniel\downloads\bugs-skeleton-windows\bugs\bugs\studentworld.h(152): warning C4018: '<': signed/unsigned mismatch
-c:\users\daniel\downloads\bugs-skeleton-windows\bugs\bugs\studentworld.h(223): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
-c:\users\daniel\downloads\bugs-skeleton-windows\bugs\bugs\studentworld.h(225): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
-c:\users\daniel\downloads\bugs-skeleton-windows\bugs\bugs\studentworld.h(227): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
-c:\users\daniel\downloads\bugs-skeleton-windows\bugs\bugs\studentworld.h(229): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
-c:\users\daniel\downloads\bugs-skeleton-windows\bugs\bugs\studentworld.h(269): warning C4018: '<': signed/unsigned mismatch
-c:\users\daniel\downloads\bugs-skeleton-windows\bugs\bugs\studentworld.h(279): warning C4018: '<': signed/unsigned mismatch
-c:\users\daniel\downloads\bugs-skeleton-windows\bugs\bugs\studentworld.h(293): warning C4018: '<': signed/unsigned mismatch
-c:\users\daniel\downloads\bugs-skeleton-windows\bugs\bugs\studentworld.h(301): warning C4018: '<': signed/unsigned mismatch
-c:\users\daniel\downloads\bugs-skeleton-windows\bugs\bugs\studentworld.h(309): warning C4018: '<': signed/unsigned mismatch
-c:\users\daniel\downloads\bugs-skeleton-windows\bugs\bugs\studentworld.h(318): warning C4018: '<': signed/unsigned mismatch
-c:\users\daniel\downloads\bugs-skeleton-windows\bugs\bugs\studentworld.h(327): warning C4018: '<': signed/unsigned mismatch
-  Generating Code...
-c:\users\daniel\downloads\bugs-skeleton-windows\bugs\bugs\studentworld.h(118): warning C4715: 'StudentWorld::init': not all control paths return a value
+c:\users\daniel\downloads\bugs-skeleton-windows\bugs\bugs\actor.cpp(117): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
+c:\users\daniel\downloads\bugs-skeleton-windows\bugs\bugs\actor.cpp(118): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
+c:\users\daniel\downloads\bugs-skeleton-windows\bugs\bugs\actor.cpp(140): warning C4018: '<': signed/unsigned mismatch
+c:\users\daniel\downloads\bugs-skeleton-windows\bugs\bugs\actor.cpp(291): warning C4018: '<': signed/unsigned mismatch
   Bugs.vcxproj -> C:\Users\Daniel\Downloads\Bugs-skeleton-windows\Bugs\Debug\Bugs.exe
   Bugs.vcxproj -> C:\Users\Daniel\Downloads\Bugs-skeleton-windows\Bugs\Debug\Bugs.pdb (Full PDB)

@@ -47,6 +47,7 @@ class Organic :public Actor
 			}
 		}
 		virtual void die();
+		virtual bool eat(int capacity);
 		virtual void doSomething() {}
 		bool isDead() {
 			return m_dead;
