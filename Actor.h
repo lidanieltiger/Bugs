@@ -78,11 +78,11 @@ class Insect :public Organic {
 		}
 		virtual int getTeam() { return 5; } //return something that's on no one's team by default
 		virtual void stun() { //get stunned by water
-			if (m_stunned) {
+			if (is_Stunned()) {
 				return;
 			}
-			m_stunned = true;
-			m_stunned_turns += 2;
+			setStun(true);
+			setStunnedTurns(2);
 		}
 		virtual void poison() {
 			sethp(-150); //get wrecked by poison
@@ -246,7 +246,7 @@ class GrassHopper : public Insect
 		virtual void doSomething() = 0;
 		virtual void doAction() {
 			Organic::doAction();
-			if (getStunnedTurns() <= 0) {
+			if (getStunnedTurns() == 0) {
 				doSomething();
 				setStunnedTurns(2);
 			}

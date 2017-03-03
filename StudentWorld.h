@@ -224,25 +224,25 @@ public:
 		if (m_col3score > max)
 			max = m_col3score;
 
-		if (m_col0score == max)
+		if (m_col0score == max&&m_col1score!=max&&m_col2score!=max&&m_col3score != max)
 			name0 = name0disp + "*";
 		else
 			name0 = name0disp;
-		if (m_col1score == max)
+		if (m_col1score == max&&m_col0score != max&&m_col2score != max&&m_col3score != max)
 			name1 = name1disp + "*";
 		else
 			name1 = name1disp;
-		if (m_col2score == max)
+		if (m_col2score == max&&m_col1score != max&&m_col0score != max&&m_col3score != max)
 			name2 = name2disp + "*";
 		else
 			name2 = name2disp;
-		if (m_col3score == max)
+		if (m_col3score == max&&m_col1score != max&&m_col2score != max&&m_col0score != max)
 			name3 = name3disp + "*";
 		else
 			name3 = name3disp;
 	}
 	bool weHaveAWinningAnt() {
-		if (m_col0score != 0 || m_col1score != 0 || m_col2score != 0 || m_col3score != 0)
+		if (m_col0score >= 6 || m_col1score >= 6 || m_col2score >= 6 || m_col3score >= 6)
 			return true;
 		return false;
 	}

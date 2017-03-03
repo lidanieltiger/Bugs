@@ -501,7 +501,6 @@ void Ant::die() {
 	StudentWorld *temp = getWorld();
 	Organic::die();
 	//increment simulation
-	temp->updateScore(m_colony, -1); //update the score
 }
 void AntHill:: die() {
 	//let simulation know that this anthill is fucked

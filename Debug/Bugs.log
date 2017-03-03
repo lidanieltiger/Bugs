@@ -1,14 +1,4 @@
-﻿  StudentWorld.cpp
-c:\users\daniel\downloads\bugs-skeleton-windows\bugs\bugs\actor.h(211): warning C4018: '<': signed/unsigned mismatch
-c:\users\daniel\downloads\bugs-skeleton-windows\bugs\bugs\studentworld.h(152): warning C4018: '<': signed/unsigned mismatch
-c:\users\daniel\downloads\bugs-skeleton-windows\bugs\bugs\studentworld.h(281): warning C4018: '<': signed/unsigned mismatch
-c:\users\daniel\downloads\bugs-skeleton-windows\bugs\bugs\studentworld.h(291): warning C4018: '<': signed/unsigned mismatch
-c:\users\daniel\downloads\bugs-skeleton-windows\bugs\bugs\studentworld.h(305): warning C4018: '<': signed/unsigned mismatch
-c:\users\daniel\downloads\bugs-skeleton-windows\bugs\bugs\studentworld.h(313): warning C4018: '<': signed/unsigned mismatch
-c:\users\daniel\downloads\bugs-skeleton-windows\bugs\bugs\studentworld.h(321): warning C4018: '<': signed/unsigned mismatch
-c:\users\daniel\downloads\bugs-skeleton-windows\bugs\bugs\studentworld.h(330): warning C4018: '<': signed/unsigned mismatch
-c:\users\daniel\downloads\bugs-skeleton-windows\bugs\bugs\studentworld.h(339): warning C4018: '<': signed/unsigned mismatch
-  Actor.cpp
+﻿  Actor.cpp
 c:\users\daniel\downloads\bugs-skeleton-windows\bugs\bugs\actor.h(211): warning C4018: '<': signed/unsigned mismatch
 c:\users\daniel\downloads\bugs-skeleton-windows\bugs\bugs\studentworld.h(152): warning C4018: '<': signed/unsigned mismatch
 c:\users\daniel\downloads\bugs-skeleton-windows\bugs\bugs\studentworld.h(281): warning C4018: '<': signed/unsigned mismatch
@@ -23,6 +13,7 @@ c:\users\daniel\downloads\bugs-skeleton-windows\bugs\bugs\actor.cpp(118): warnin
 c:\users\daniel\downloads\bugs-skeleton-windows\bugs\bugs\actor.cpp(140): warning C4018: '<': signed/unsigned mismatch
 c:\users\daniel\downloads\bugs-skeleton-windows\bugs\bugs\actor.cpp(291): warning C4018: '<': signed/unsigned mismatch
   Generating Code...
-c:\users\daniel\downloads\bugs-skeleton-windows\bugs\bugs\studentworld.h(119): warning C4715: 'StudentWorld::init': not all control paths return a value
+  Skipping... (no relevant changes detected)
+  StudentWorld.cpp
   Bugs.vcxproj -> C:\Users\Daniel\Downloads\Bugs-skeleton-windows\Bugs\Debug\Bugs.exe
   Bugs.vcxproj -> C:\Users\Daniel\Downloads\Bugs-skeleton-windows\Bugs\Debug\Bugs.pdb (Full PDB)
