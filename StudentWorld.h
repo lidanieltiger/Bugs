@@ -9,6 +9,7 @@
 #include <string>
 #include <vector>
 #include<sstream>
+#include<iomanip>
 using namespace std;
 // Students:  Add code to this file, StudentWorld.cpp, Actor.h, and Actor.cpp
 
@@ -128,18 +129,17 @@ public:
 		delete temp;
 	}
 	void setDisplayText() {
-		string s = "Ticks: " + to_string(m_tick) + " - ";
+		std::ostringstream oss1; 
+		oss1 << "Ticks: " << setw(5) << m_tick<<" - ";
 
 		std::ostringstream oss;  // oss is a name of our choosing.
-		oss.setf(ios::fixed);
-		oss.precision(2);
-		oss << "  " << name0 << ": " << m_col0score; 
-		oss << "  " << name1 << ": " << m_col1score;
-		oss << "  " << name2 << ": " << m_col2score;
-		oss << "  " << name3 << ": " << m_col3score;
-		string leaderboard = oss.str();
-		s += leaderboard;
-		setGameStatText(s);
+		oss.fill('0');
+		oss << name0 << ": " << setw(2) << m_col0score;
+		oss << "  " << name1 << ": " << setw(2) << m_col1score;
+		oss << "  " << name2 << ": " << setw(2) << m_col2score;
+		oss << "  " << name3 << ": " << setw(2) << m_col3score;
+		string leaderboard = oss1.str()+oss.str();
+		setGameStatText(leaderboard);
 	}
 	virtual int move()
 	{
@@ -168,25 +168,21 @@ public:
 			}
 		 }
 
-		 /*
-		 updateDisplayText(); // update the ticks/ant stats text at screen top
+		 
+		 setDisplayText();//update the display text
+
 		 // If the simulation’s over (ticks == 2000) then see if we have a winner
-		 if (theSimulationIsOver())
+		 if (m_tick>=2000)
 		 {
-		 if (weHaveAWinningAnt())
-		 {
-		 setWinner(getWinningAntsName());
-		 return GWSTATUS_PLAYER_WON;
-		 }
-		 else
-		 return GWSTATUS_NO_WINNER;
-		 }*/
-		 // the simulation is not yet over, continue!
-		 if(m_tick>=2000)
-			 return GWSTATUS_NO_WINNER;
+			 if (weHaveAWinningAnt())
+			 {
+				 setWinner(getWinningAntsName());
+				 return GWSTATUS_PLAYER_WON;
+			 }else
+				return GWSTATUS_NO_WINNER;
+		 }else
 		 return GWSTATUS_CONTINUE_GAME;
 	}
-
 	virtual void cleanUp()
 	{
 		for (int x = 0; x < VIEW_WIDTH; x++) {
@@ -244,6 +240,22 @@ public:
 			name3 = name3disp + "*";
 		else
 			name3 = name3disp;
+	}
+	bool weHaveAWinningAnt() {
+		if (m_col0score != 0 || m_col1score != 0 || m_col2score != 0 || m_col3score != 0)
+			return true;
+		return false;
+	}
+	string getWinningAntsName() {
+		if (name0[name0.length() - 1] == '*')
+			return name0disp;
+		if (name1[name1.length() - 1] == '*')
+			return name1disp;
+		if (name2[name2.length() - 1] == '*')
+			return name2disp;
+		if (name3[name3.length() - 1] == '*')
+			return name3disp;
+		return "";
 	}
 	~StudentWorld() { //destructor destroy all the actors
 		cleanUp();
@@ -333,7 +345,7 @@ public:
 	}
 private:
 	int m_tick;
-	double m_col0score, m_col1score, m_col2score, m_col3score;
+	int m_col0score, m_col1score, m_col2score, m_col3score;
 	string name0,name1,name2,name3;
 	string name0disp, name1disp, name2disp, name3disp;
 
