@@ -11,7 +11,8 @@ colony: USCAnt // first line specifies the ant's name
 // in our 'Bugs' language
  
 start:
- 	faceRandomDirection   
+ 	faceRandomDirection
+ 	emitPheromone   
  	moveForward           
  	if i_am_standing_on_food then goto on_food
  	if i_am_hungry then goto eat_food

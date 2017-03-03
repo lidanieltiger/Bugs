@@ -53,14 +53,9 @@ void GrassHopper::attemptMove(Direction dir) { //if the grasshopper was able to 
 		break;
 	}//end switch statement
 }
-void Organic::doAction() {
+void Organic::die() {
 	StudentWorld *temp = getWorld();
-	sethp(-1); //lose health every turn
-	if (isDead()) {
-		temp->addFood(getX(), getY(), 100);
-		return;
-		//add 100 food to the simulation, its state has already been set to dead
-	}
+	temp->addFood(getX(), getY(), 100);
 }
 void Pheromone::doAction() {
 	StudentWorld *temp = getWorld();
@@ -156,6 +151,7 @@ void AntHill::doSomething() {
 	}
 	if (gethp() >= 2000) {
 		//add an ant
+		temp->updateScore(m_colony,1); //update the score
 		temp->addAnt(getX(), getY(), m_colony, instructions);
 		sethp(-1500);
 		//increase the count of ants in the world
@@ -225,6 +221,7 @@ void Ant::doSomething() {
 						return;
 						break;
 					case Compiler::emitPheromone:
+						temp->addPheromone(getX(), getY(), m_colony);
 						m_counter++;
 						return;
 						break;
@@ -268,6 +265,11 @@ void Ant::doSomething() {
 
 			}
 		}
+		else {
+			m_dead = true;
+			return;
+		}
+			
 	}
 	
 
@@ -328,7 +330,10 @@ void Ant::processIf(string op1, string op2) {
 		return;
 	}
 	if (op1 == "I_smell_pheromone_in_front_of_me") {
-		m_counter++;
+		if(isPheromone())
+			m_counter = (int)op2[0] - 48;
+		else
+			m_counter++;
 		return;
 	}
 	if (op1 == "I_smell_danger_in_front_of_me") {
@@ -456,4 +461,62 @@ bool Ant::getDanger() {
 	}//end switch statement
 
 	return false;
+}
+bool Ant::isPheromone() {
+	StudentWorld *temp = getWorld();
+	switch (m_direction) {
+	case up: {
+		if (temp->isValidTarget(getX(), getY() - 1)) { //or not collide with rock
+			if (temp->getPheromone(getX(), getY() - 1, m_colony)!=nullptr)
+				return true;
+			return false;
+		}
+		return false;
+		break;
+	}
+	case down:
+	{
+		if (temp->isValidTarget(getX(), getY() + 1)) { //or not collide with rock
+			if (temp->getPheromone(getX(), getY() +1, m_colony) != nullptr)
+				return true;
+			return false;
+		}
+		return false;
+		break;
+	}
+	case left:
+	{
+		if (temp->isValidTarget(getX() - 1, getY())) { //or not collide with rock
+			if (temp->getPheromone(getX()-1, getY(), m_colony) != nullptr)
+				return true;
+			return false;
+		}
+		return false;
+		break;
+	}
+	case right:
+	{
+		if (temp->isValidTarget(getX() + 1, getY())) { //or not collide with rock
+			if (temp->getPheromone(getX()+1, getY(), m_colony) != nullptr)
+				return true;
+			return false;
+		}
+		return false;
+		break;
+	}
+	default:
+		break;
+	}//end switch statement
+
+	return false;
+}
+void Ant::die() {
+	StudentWorld *temp = getWorld();
+	Organic::die();
+	//increment simulation
+	temp->updateScore(m_colony, -1); //update the score
+}
+void AntHill:: die() {
+	//let simulation know that this anthill is fucked
+	//drop no food
 }

@@ -38,7 +38,15 @@ class Organic :public Actor
 			m_hp = hp;
 			m_dead = false;
 		}
-		virtual void doAction();
+		virtual void doAction() {
+			sethp(-1); //lose health every turn
+			if (isDead()) {
+				die();
+				return;
+				//add 100 food to the simulation, its state has already been set to dead
+			}
+		}
+		virtual void die();
 		virtual void doSomething() {}
 		bool isDead() {
 			return m_dead;
@@ -114,7 +122,7 @@ public:
 class Pheromone :public Organic {
 	public:
 		Pheromone(int startX, int startY, StudentWorld *src, int pheromonetype)
-			:Organic(startX, startY, src, pheromonetype, Direction(2), 2, 256) {
+			:Organic(startX, startY, src, IID_PHEROMONE_TYPE0+pheromonetype, Direction(2), 2, 256) {
 			m_colony = pheromonetype;
 		}
 		void doAction(); //override doaction so that it doesn't drop food on death
@@ -140,6 +148,7 @@ class AntHill : public Organic {
 			doSomething();
 		}
 		void doSomething();
+		virtual void die(); //drops nothing when dead
 	private: 
 		Compiler* instructions;
 		int m_colony;
@@ -168,6 +177,7 @@ class Ant : public Insect {
 		void doSomething();
 		void attemptMove(Direction dir);
 		bool getDanger();
+		bool isPheromone();
 		bool checkDanger(std::vector<Trap*> traps, std::vector<Insect*> insects) {
 			if (traps.size() > 0)
 				return true;
@@ -185,6 +195,7 @@ class Ant : public Insect {
 			sethp(-50);
 			m_bitten = true;
 		};
+		virtual void die();
 	private:
 		int m_counter;
 		int m_colony;

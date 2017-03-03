@@ -8,6 +8,7 @@
 #include "Compiler.h"
 #include <string>
 #include <vector>
+#include<sstream>
 using namespace std;
 // Students:  Add code to this file, StudentWorld.cpp, Actor.h, and Actor.cpp
 
@@ -18,6 +19,7 @@ public:
 	 : GameWorld(assetDir)
 	{
 		m_tick = 0;
+		m_col0score = m_col1score = m_col2score = m_col3score = 0;
 	}
 	virtual int init()
 	{
@@ -27,13 +29,35 @@ public:
 		std::vector<std::string> fileNames = getFilenamesOfAntPrograms();
 
 		compilerForEntrant0 = new Compiler;
-		std::string error;
+		compilerForEntrant1 = new Compiler;
+		compilerForEntrant2 = new Compiler;
+		compilerForEntrant3 = new Compiler;
 
+		std::string error;
 		if (!compilerForEntrant0->compile(fileNames[0], error))
 		{
 			setError(fileNames[0] + " " + error);
 			return GWSTATUS_LEVEL_ERROR;
 		}
+		if (!compilerForEntrant1->compile(fileNames[1], error))
+		{
+			setError(fileNames[1] + " " + error);
+			return GWSTATUS_LEVEL_ERROR;
+		}
+		if (!compilerForEntrant2->compile(fileNames[2], error))
+		{
+			setError(fileNames[2] + " " + error);
+			return GWSTATUS_LEVEL_ERROR;
+		}
+		if (!compilerForEntrant3->compile(fileNames[3], error))
+		{
+			setError(fileNames[3] + " " + error);
+			return GWSTATUS_LEVEL_ERROR;
+		}
+		name0disp = fileNames[0];
+		name1disp = fileNames[1];
+		name2disp = fileNames[2];
+		name3disp = fileNames[3];
 
 		Field f;
 		string fieldFile = getFieldFilename();
@@ -55,10 +79,16 @@ public:
 					}
 						break;
 					case (Field::FieldItem::anthill1):
+						ah1 = new AntHill(x, y, this, compilerForEntrant1, 1);
+						actor_map[y][x].push_back(ah1);
 						break;
 					case (Field::FieldItem::anthill2):
+						ah2 = new AntHill(x, y, this, compilerForEntrant2, 2);
+						actor_map[y][x].push_back(ah2);
 						break;
 					case (Field::FieldItem::anthill3):
+						ah3 = new AntHill(x, y, this, compilerForEntrant3, 3);
+						actor_map[y][x].push_back(ah3);
 						break;
 					case (Field::FieldItem::food):
 						actor_map[y][x].push_back(new Food(x, y, this,6000));
@@ -98,7 +128,17 @@ public:
 		delete temp;
 	}
 	void setDisplayText() {
-		string s = "Ticks: "+to_string(m_tick);
+		string s = "Ticks: " + to_string(m_tick) + " - ";
+
+		std::ostringstream oss;  // oss is a name of our choosing.
+		oss.setf(ios::fixed);
+		oss.precision(2);
+		oss << "  " << name0 << ": " << m_col0score; 
+		oss << "  " << name1 << ": " << m_col1score;
+		oss << "  " << name2 << ": " << m_col2score;
+		oss << "  " << name3 << ": " << m_col3score;
+		string leaderboard = oss.str();
+		s += leaderboard;
 		setGameStatText(s);
 	}
 	virtual int move()
@@ -158,6 +198,53 @@ public:
 			}
 		}
 	}
+	void updateScore(int colony, int score) {
+		switch (colony) {
+			case 0:
+				m_col0score += score;
+				break;
+			case 1:
+				m_col1score += score;
+				break;
+			case 2:
+				m_col2score += score;
+				break;
+			case 3:
+				m_col3score += score;
+				break;
+			default:
+				break;
+		}
+		findMaxScore();
+	}
+	void findMaxScore() {
+		int max = 0;
+		if (m_col0score > max)
+			max = m_col0score;
+		if (m_col1score > max)
+			max = m_col1score;
+		if (m_col2score > max)
+			max = m_col2score;
+		if (m_col3score > max)
+			max = m_col3score;
+
+		if (m_col0score == max)
+			name0 = name0disp + "*";
+		else
+			name0 = name0disp;
+		if (m_col1score == max)
+			name1 = name1disp + "*";
+		else
+			name1 = name1disp;
+		if (m_col2score == max)
+			name2 = name2disp + "*";
+		else
+			name2 = name2disp;
+		if (m_col3score == max)
+			name3 = name3disp + "*";
+		else
+			name3 = name3disp;
+	}
 	~StudentWorld() { //destructor destroy all the actors
 		cleanUp();
 	}
@@ -188,11 +275,33 @@ public:
 		}
 		actor_map[y][x].push_back(new Food(x, y, this, add));
 	}
+	void addPheromone(int x, int y, int colony) {
+		for (int i = 0; i < actor_map[y][x].size(); i++) {
+			Pheromone* pher = dynamic_cast<Pheromone*>(actor_map[y][x][i]);
+			if (pher != nullptr&&pher->getColony()==colony) {
+				pher->sethp(256);
+				if (pher->gethp() > 768) { //account for overflow
+					int subtract = pher->gethp() - 768;
+					pher->sethp(-subtract);
+				}
+				return;
+			}
+		}
+		actor_map[y][x].push_back(new Pheromone(x, y, this, colony));
+	}
 	Food* getFood(int x, int y) {
 		for (int i = 0; i < actor_map[y][x].size(); i++) {
 			Food* food = dynamic_cast<Food*>(actor_map[y][x][i]);
 			if(food!=nullptr)
 				return food;
+		}
+		return nullptr;
+	}
+	Pheromone* getPheromone(int x, int y, int colony) {
+		for (int i = 0; i < actor_map[y][x].size(); i++) {
+			Pheromone* pher = dynamic_cast<Pheromone*>(actor_map[y][x][i]);
+			if (pher != nullptr&&pher->getColony()==colony)
+				return pher;
 		}
 		return nullptr;
 	}
@@ -224,6 +333,10 @@ public:
 	}
 private:
 	int m_tick;
+	double m_col0score, m_col1score, m_col2score, m_col3score;
+	string name0,name1,name2,name3;
+	string name0disp, name1disp, name2disp, name3disp;
+
 	std::vector<Actor*> actor_map[64][64]; //2d array of lists which contain pointers to actors
 };
 
